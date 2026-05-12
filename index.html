@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ming9reum</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&family=DM+Sans:wght@300;400;500&family=Cormorant:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --cream: #F4EFE6; --cream2: #EDE7DC; --white: #FAF7F2;
+  --ink: #1C1916; --ink2: #4A4540; --muted: #9A928A;
+  --wine: #7B3F5E; --wine2: #5C2D45; --border: rgba(28,25,22,0.1);
+}
+html { scroll-behavior: smooth; }
+body { background: var(--cream); color: var(--ink); font-family: 'Noto Sans KR', sans-serif; font-weight: 300; overflow-x: hidden; }
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  height: 52px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem;
+  background: rgba(244,239,230,0.93); backdrop-filter: blur(12px);
+  border-bottom: 0.5px solid var(--border);
+}
+nav.on-hero { background: transparent; border-bottom-color: transparent; }
+.nav-logo { font-family: 'Libre Baskerville', serif; font-size: 1.05rem; font-weight: 700; color: var(--ink); text-decoration: none; cursor: pointer; }
+.nav-center { display: flex; gap: 2rem; list-style: none; position: absolute; left: 50%; transform: translateX(-50%); }
+.nav-center a { font-family: 'DM Sans', sans-serif; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink2); text-decoration: none; cursor: pointer; transition: color 0.2s; }
+.nav-center a:hover { color: var(--ink); }
+.nav-sub { font-family: 'DM Sans', sans-serif; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--wine); text-decoration: none; font-weight: 500; border: 0.5px solid var(--wine); padding: 0.35rem 0.9rem; transition: background 0.2s, color 0.2s; }
+.nav-sub:hover { background: var(--wine); color: var(--white); }
+
+/* HERO */
+.hero { height: 100svh; min-height: 600px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; }
+.hero-bg { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1800&q=85'); background-size: cover; background-position: center 35%; animation: heroZoom 16s ease-out forwards; }
+@keyframes heroZoom { from { transform: scale(1.06); } to { transform: scale(1); } }
+.hero-fog { position: absolute; bottom: 0; left: 0; right: 0; height: 48%; z-index: 1; background: linear-gradient(to top, var(--cream) 0%, transparent 100%); }
+.hero-dim { position: absolute; inset: 0; z-index: 1; background: rgba(244,239,230,0.12); }
+.hero-content { position: relative; z-index: 2; animation: fadeUp 1.2s cubic-bezier(0.16,1,0.3,1) 0.2s both; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+.hero-badge { display: inline-block; font-family: 'DM Sans', sans-serif; font-size: 0.56rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink); background: rgba(244,239,230,0.65); backdrop-filter: blur(4px); border: 0.5px solid rgba(28,25,22,0.18); padding: 0.3rem 0.9rem; border-radius: 99px; margin-bottom: 1.4rem; }
+.hero-title { font-family: 'Libre Baskerville', serif; font-size: clamp(3rem, 9vw, 6.5rem); font-weight: 700; letter-spacing: -0.02em; color: var(--white); line-height: 1; text-shadow: 0 2px 40px rgba(28,25,22,0.2); margin-bottom: 0.8rem; }
+.hero-sub { font-family: 'Noto Sans KR', sans-serif; font-size: 0.8rem; font-weight: 300; color: rgba(250,247,242,0.75); margin-bottom: 2.2rem; }
+.hero-btn { display: inline-flex; align-items: center; gap: 0.6rem; background: var(--white); color: var(--ink); padding: 0.8rem 1.8rem; font-family: 'DM Sans', sans-serif; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.06em; text-decoration: none; cursor: pointer; transition: background 0.22s, color 0.22s; }
+.hero-btn:hover { background: var(--wine); color: var(--white); }
+.hero-btn svg { transition: transform 0.22s; }
+.hero-btn:hover svg { transform: translateX(3px); }
+
+/* SECTIONS */
+.section-wrap { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+.eyebrow { font-family: 'DM Sans', sans-serif; font-size: 0.56rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--wine); font-weight: 500; margin-bottom: 0.35rem; }
+.sec-heading { font-family: 'Noto Sans KR', sans-serif; font-size: 1.2rem; font-weight: 500; margin-bottom: 1.8rem; display: flex; justify-content: space-between; align-items: center; }
+.sec-heading button { font-family: 'DM Sans', sans-serif; font-size: 0.62rem; letter-spacing: 0.1em; color: var(--muted); background: none; border: none; cursor: pointer; transition: color 0.2s; }
+.sec-heading button:hover { color: var(--ink); }
+
+/* CURATED */
+.curated-wrap { padding: 4.5rem 0 3.5rem; background: var(--white); }
+.portrait-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.portrait-card { position: relative; overflow: hidden; cursor: pointer; display: block; text-decoration: none; }
+.portrait-card-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; filter: brightness(0.72) saturate(0.88); transition: transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94); }
+.portrait-card:hover .portrait-card-img { transform: scale(1.04); }
+.portrait-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(28,25,22,0.8) 0%, rgba(28,25,22,0.04) 55%); }
+.portrait-badge { position: absolute; top: 1rem; left: 50%; transform: translateX(-50%); background: var(--wine); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase; padding: 0.22rem 0.75rem; white-space: nowrap; font-weight: 500; }
+.portrait-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 1.2rem; text-align: center; }
+.portrait-cat { font-family: 'DM Sans', sans-serif; font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(250,247,242,0.5); margin-bottom: 0.35rem; }
+.portrait-title { font-family: 'Noto Sans KR', sans-serif; font-size: clamp(0.9rem, 2.2vw, 1.15rem); font-weight: 500; color: var(--white); line-height: 1.35; margin-bottom: 0.45rem; }
+.portrait-meta { font-family: 'DM Sans', sans-serif; font-size: 0.58rem; color: rgba(250,247,242,0.48); display: flex; align-items: center; justify-content: center; gap: 0.45rem; }
+
+/* LATEST */
+.latest-wrap { padding: 4rem 0 5rem; background: var(--cream); }
+.latest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+.lcard { display: block; text-decoration: none; color: inherit; cursor: pointer; background: var(--white); }
+.lcard-img-wrap { overflow: hidden; }
+.lcard-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; filter: brightness(0.95) saturate(0.88); transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94); }
+.lcard:hover .lcard-img { transform: scale(1.04); }
+.lcard-no-img { width: 100%; aspect-ratio: 3/4; background: var(--cream2); display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 2rem; }
+.lcard-body { padding: 0.9rem 1rem 1.1rem; }
+.lcard-badge { display: inline-block; font-family: 'DM Sans', sans-serif; font-size: 0.5rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--wine2); border: 0.5px solid rgba(123,63,94,0.3); padding: 0.16rem 0.5rem; margin-bottom: 0.45rem; }
+.lcard-meta { font-family: 'DM Sans', sans-serif; font-size: 0.58rem; color: var(--muted); display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.38rem; }
+.lcard-title { font-family: 'Noto Sans KR', sans-serif; font-size: 0.9rem; font-weight: 500; line-height: 1.4; margin-bottom: 0.45rem; transition: color 0.2s; }
+.lcard:hover .lcard-title { color: var(--wine); }
+.lcard-excerpt { font-size: 0.72rem; line-height: 1.7; color: var(--ink2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 0.8rem; }
+.lcard-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 0.65rem; border-top: 0.5px solid var(--border); }
+.lcard-author { display: flex; align-items: center; gap: 0.38rem; }
+.author-avatar { width: 19px; height: 19px; border-radius: 50%; background: var(--wine); display: flex; align-items: center; justify-content: center; font-family: 'DM Sans', sans-serif; font-size: 0.48rem; color: var(--white); font-weight: 500; flex-shrink: 0; }
+.lcard-author span { font-family: 'DM Sans', sans-serif; font-size: 0.58rem; color: var(--muted); }
+.lcard-read { font-family: 'DM Sans', sans-serif; font-size: 0.58rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.mdot { width: 2px; height: 2px; border-radius: 50%; background: var(--muted); flex-shrink: 0; display: inline-block; }
+
+/* CAT ROW */
+.cat-row { background: var(--cream2); padding: 1.5rem 0; }
+.cat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.5rem; max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+.cat-chip { background: var(--cream); border: 0.5px solid var(--border); padding: 0.65rem 0.5rem; text-align: center; cursor: pointer; text-decoration: none; display: block; font-family: 'DM Sans', sans-serif; font-size: 0.66rem; font-weight: 400; color: var(--ink2); transition: background 0.2s, color 0.2s; }
+.cat-chip:hover { background: var(--wine); color: var(--white); border-color: var(--wine); }
+
+/* ARCHIVE */
+#page-archive { padding-top: 52px; }
+.archive-header { background: var(--white); text-align: center; padding: 4rem 2rem 3rem; border-bottom: 0.5px solid var(--border); }
+.archive-eyebrow { font-family: 'DM Sans', sans-serif; font-size: 0.56rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.8rem; }
+.archive-title { font-family: 'Cormorant', serif; font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 400; font-style: italic; color: var(--ink); margin-bottom: 1rem; line-height: 1.1; }
+.archive-desc { font-family: 'Noto Sans KR', sans-serif; font-size: 0.8rem; font-weight: 300; color: var(--ink2); line-height: 1.8; max-width: 480px; margin: 0 auto; }
+.filter-bar { background: var(--white); border-bottom: 0.5px solid var(--border); padding: 1rem 2.5rem; display: flex; align-items: center; justify-content: center; gap: 1.5rem; position: sticky; top: 52px; z-index: 100; flex-wrap: wrap; }
+.filter-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: center; }
+.filter-tab { font-family: 'DM Sans', sans-serif; font-size: 0.65rem; letter-spacing: 0.06em; padding: 0.4rem 0.9rem; border: 0.5px solid var(--border); background: none; cursor: pointer; color: var(--ink2); transition: all 0.2s; }
+.filter-tab:hover { background: var(--cream); }
+.filter-tab.active { background: var(--wine); color: var(--white); border-color: var(--wine); }
+.search-box { display: flex; align-items: center; gap: 0.5rem; border: 0.5px solid var(--border); background: var(--cream); padding: 0.4rem 0.8rem; }
+.search-box svg { color: var(--muted); flex-shrink: 0; }
+.search-box input { border: none; background: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 0.72rem; color: var(--ink); width: 160px; }
+.search-box input::placeholder { color: var(--muted); }
+.results-info { font-family: 'DM Sans', sans-serif; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding: 1.2rem 2.5rem; display: flex; align-items: center; gap: 0.5rem; max-width: 1200px; margin: 0 auto; }
+.archive-grid-wrap { max-width: 1400px; margin: 0 auto; padding: 0 2rem 5rem; }
+.archive-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.8rem 1.4rem; }
+.no-results { text-align: center; padding: 4rem; color: var(--muted); font-family: 'Noto Sans KR', sans-serif; font-size: 0.9rem; font-style: italic; }
+.acard { display: block; text-decoration: none; color: inherit; cursor: pointer; background: var(--white); }
+.acard-img-wrap { overflow: hidden; }
+.acard-img { width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; filter: brightness(0.95) saturate(0.88); transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94); }
+.acard:hover .acard-img { transform: scale(1.04); }
+.acard-no-img { width: 100%; aspect-ratio: 4/5; background: var(--cream2); display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 2.5rem; }
+.acard-body { padding: 1rem 1rem 1.2rem; }
+.acard-badge { display: inline-block; font-family: 'DM Sans', sans-serif; font-size: 0.5rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--wine2); border: 0.5px solid rgba(123,63,94,0.3); padding: 0.16rem 0.5rem; margin-bottom: 0.45rem; }
+.acard-meta { font-family: 'DM Sans', sans-serif; font-size: 0.6rem; color: var(--muted); display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.4rem; }
+.acard-title { font-family: 'Noto Sans KR', sans-serif; font-size: 0.95rem; font-weight: 500; line-height: 1.4; margin-bottom: 0.5rem; transition: color 0.2s; }
+.acard:hover .acard-title { color: var(--wine); }
+.acard-excerpt { font-size: 0.74rem; line-height: 1.7; color: var(--ink2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 0.8rem; }
+.acard-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 0.65rem; border-top: 0.5px solid var(--border); }
+.acard-author { display: flex; align-items: center; gap: 0.4rem; }
+.acard-author span { font-family: 'DM Sans', sans-serif; font-size: 0.6rem; color: var(--muted); }
+.acard-read { font-family: 'DM Sans', sans-serif; font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+
+/* POST PAGE */
+#page-post { padding-top: 52px; }
+.post-hero { position: relative; height: 70svh; min-height: 480px; overflow: hidden; display: flex; align-items: flex-end; }
+.post-hero-img { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform 0.8s ease; }
+.post-hero:hover .post-hero-img { transform: scale(1.02); }
+.post-hero-fog { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, rgba(244,239,230,1) 0%, rgba(244,239,230,0.3) 40%, transparent 70%); }
+.post-hero-content { position: relative; z-index: 2; padding: 2.5rem 2.5rem 3rem; width: 100%; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.post-breadcrumb { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; justify-content: center; }
+.post-breadcrumb span, .post-breadcrumb a { font-family: 'DM Sans', sans-serif; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink2); text-decoration: none; cursor: pointer; transition: color 0.2s; }
+.post-breadcrumb a:hover { color: var(--wine); }
+.post-hero-cat { display: inline-block; background: var(--wine); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.5rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.22rem 0.7rem; margin-bottom: 0.8rem; font-weight: 500; }
+.post-hero-title { font-family: 'Noto Sans KR', sans-serif; font-size: clamp(1.6rem, 4vw, 2.8rem); font-weight: 500; line-height: 1.25; color: var(--ink); margin-bottom: 0.6rem; }
+.post-hero-subtitle { font-family: 'Cormorant', serif; font-size: 1.05rem; font-style: italic; color: var(--ink2); font-weight: 400; }
+.post-body-wrap { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 220px 1fr; gap: 4rem; padding: 3.5rem 2.5rem 5rem; }
+.post-author-label { font-family: 'DM Sans', sans-serif; font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+.post-author-name { font-family: 'Noto Sans KR', sans-serif; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; }
+.post-author-name .author-avatar { width: 28px; height: 28px; font-size: 0.58rem; }
+.post-date-block, .post-read-block { display: flex; align-items: center; gap: 0.5rem; font-family: 'DM Sans', sans-serif; font-size: 0.7rem; color: var(--ink2); margin-bottom: 0.8rem; }
+.post-sidebar-divider { height: 0.5px; background: var(--border); margin: 1.5rem 0; }
+.post-quote-aside { font-family: 'Cormorant', serif; font-size: 0.9rem; font-style: italic; color: var(--ink2); line-height: 1.7; padding-left: 0.8rem; border-left: 2px solid var(--wine); }
+.post-content p { font-family: 'Noto Sans KR', sans-serif; font-size: 0.92rem; font-weight: 300; line-height: 2.1; color: var(--ink2); margin-bottom: 1.5rem; }
+.post-img-single { overflow: hidden; margin: 2.5rem 0; }
+.post-img-single img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; filter: brightness(0.95) saturate(0.88); transition: transform 0.8s ease; }
+.post-img-single:hover img { transform: scale(1.03); }
+.post-pullquote { font-family: 'Cormorant', serif; font-size: clamp(1.2rem, 2.5vw, 1.6rem); font-weight: 600; font-style: italic; color: var(--ink); line-height: 1.5; margin: 3rem 0; padding: 2rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); text-align: center; }
+.post-closing { font-family: 'Noto Sans KR', sans-serif; font-size: 0.88rem; font-weight: 300; line-height: 2; color: var(--ink2); font-style: italic; margin-top: 2rem; }
+.post-nav-bar { border-top: 0.5px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 2.5rem; max-width: 900px; margin: 0 auto; }
+.post-nav-back { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink2); background: none; border: none; transition: color 0.2s; }
+.post-nav-back:hover { color: var(--wine); }
+.post-nav-right { text-align: right; }
+.post-nav-label { font-family: 'DM Sans', sans-serif; font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.2rem; }
+.post-nav-edition { font-family: 'Cormorant', serif; font-size: 0.9rem; font-style: italic; color: var(--ink2); }
+
+/* LOADING */
+.loading-state { text-align: center; padding: 5rem 2rem; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.82rem; letter-spacing: 0.1em; }
+.loading-spinner { width: 24px; height: 24px; border: 1.5px solid var(--cream2); border-top-color: var(--wine); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* FOOTER */
+footer { background: var(--ink); color: rgba(250,247,242,0.4); padding: 3.5rem 2.5rem 2rem; }
+.footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 3rem; margin-bottom: 2.5rem; }
+.footer-logo { font-family: 'Libre Baskerville', serif; font-size: 1.1rem; font-weight: 700; color: rgba(250,247,242,0.85); display: block; margin-bottom: 0.6rem; }
+.footer-tagline { font-family: 'Noto Sans KR', sans-serif; font-size: 0.72rem; font-weight: 300; color: rgba(250,247,242,0.3); line-height: 1.6; }
+.footer-col-title { font-family: 'DM Sans', sans-serif; font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(250,247,242,0.35); margin-bottom: 1rem; }
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 0.5rem; }
+.footer-links a { font-family: 'DM Sans', sans-serif; font-size: 0.72rem; color: rgba(250,247,242,0.28); text-decoration: none; transition: color 0.2s; cursor: pointer; }
+.footer-links a:hover { color: rgba(250,247,242,0.7); }
+.newsletter-input-row { display: flex; }
+.newsletter-input { flex: 1; padding: 0.6rem 0.8rem; background: rgba(250,247,242,0.06); border: 0.5px solid rgba(250,247,242,0.12); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.7rem; outline: none; transition: border-color 0.2s; }
+.newsletter-input::placeholder { color: rgba(250,247,242,0.25); }
+.newsletter-input:focus { border-color: var(--wine); }
+.newsletter-join { background: var(--wine); color: var(--white); border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0 1rem; transition: background 0.2s; }
+.newsletter-join:hover { background: var(--wine2); }
+.newsletter-note { font-size: 0.62rem; color: rgba(250,247,242,0.2); margin-top: 0.6rem; line-height: 1.5; }
+.footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 1.5rem; border-top: 0.5px solid rgba(250,247,242,0.07); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.footer-copy { font-family: 'DM Sans', sans-serif; font-size: 0.6rem; color: rgba(250,247,242,0.18); }
+.footer-legal { display: flex; gap: 1.5rem; list-style: none; }
+.footer-legal a { font-family: 'DM Sans', sans-serif; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(250,247,242,0.2); text-decoration: none; transition: color 0.2s; }
+.footer-legal a:hover { color: rgba(250,247,242,0.55); }
+
+@media (max-width: 768px) {
+  nav { padding: 0 1.2rem; } .nav-center { display: none; }
+  .portrait-grid { grid-template-columns: 1fr; }
+  .latest-grid { grid-template-columns: 1fr 1fr; }
+  .archive-grid { grid-template-columns: 1fr 1fr; }
+  .post-body-wrap { grid-template-columns: 1fr; gap: 2rem; padding: 2rem 1.2rem 4rem; }
+  .filter-bar { flex-direction: column; align-items: flex-start; padding: 0.8rem 1.2rem; }
+  .footer-inner { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .section-wrap { padding: 0 1.2rem; }
+  .archive-grid-wrap { padding: 0 1.2rem 3rem; }
+  .post-hero-content { padding: 2rem 1.2rem; }
+}
+@media (max-width: 480px) {
+  .latest-grid { grid-template-columns: 1fr; }
+  .archive-grid { grid-template-columns: 1fr; }
+  .cat-grid { grid-template-columns: repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<nav id="main-nav" class="on-hero">
+  <span class="nav-logo" onclick="goHome()">ming9reum</span>
+  <ul class="nav-center">
+    <li><a onclick="goArchive()">Journal</a></li>
+    <li><a href="#">About</a></li>
+  </ul>
+  <a href="ming9reum-admin.html" class="nav-sub">Admin</a>
+</nav>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-bg"></div><div class="hero-dim"></div><div class="hero-fog"></div>
+    <div class="hero-content">
+      <div class="hero-badge">Travel Magazine 2026</div>
+      <h1 class="hero-title">ming9reum</h1>
+      <p class="hero-sub">영원히 기억될 찰나의 순간들, 감성 여행 매거진</p>
+      <span class="hero-btn" onclick="goArchive()">
+        여행 기록 보기
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </span>
+    </div>
+  </section>
+
+  <div class="curated-wrap">
+    <div class="section-wrap">
+      <div class="eyebrow">Curated Story</div>
+      <div class="sec-heading">주목할 만한 이야기 <button onclick="goArchive()">전체 보기 →</button></div>
+      <div class="portrait-grid" id="home-curated">
+        <div class="loading-state"><div class="loading-spinner"></div>불러오는 중...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cat-row">
+    <div class="cat-grid">
+      <a href="#" class="cat-chip" onclick="goArchiveFilter('자연'); return false;">자연</a>
+      <a href="#" class="cat-chip" onclick="goArchiveFilter('도시'); return false;">도시</a>
+      <a href="#" class="cat-chip" onclick="goArchiveFilter('음식'); return false;">음식</a>
+      <a href="#" class="cat-chip" onclick="goArchiveFilter('카페·숙소'); return false;">카페·숙소</a>
+    </div>
+  </div>
+
+  <div class="latest-wrap">
+    <div class="section-wrap">
+      <div class="eyebrow">Latest Journal</div>
+      <div class="sec-heading">최근의 여정들 <button onclick="goArchive()">전체 보기 →</button></div>
+      <div class="latest-grid" id="home-latest">
+        <div class="loading-state" style="grid-column:1/-1"><div class="loading-spinner"></div>불러오는 중...</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div><span class="footer-logo">ming9reum</span><p class="footer-tagline">영원히 기억될 찰나의 순간들, 감성 여행 매거진</p></div>
+      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a onclick="goArchive()">Journal</a></li><li><a href="#">About</a></li></ul></div>
+      <div><div class="footer-col-title">Connect</div><ul class="footer-links"><li><a href="#">Instagram</a></li><li><a href="#">Pinterest</a></li></ul></div>
+      <div><div class="footer-col-title">Newsletter</div><div class="newsletter-input-row"><input class="newsletter-input" type="email" placeholder="Your email"><button class="newsletter-join">Join</button></div><p class="newsletter-note">감성 여행 이야기를 매주 받아보세요.</p></div>
+    </div>
+    <div class="footer-bottom"><span class="footer-copy">© 2026 ming9reum. All rights reserved.</span><ul class="footer-legal"><li><a href="#">Privacy</a></li><li><a href="ming9reum-admin.html">Admin</a></li></ul></div>
+  </footer>
+</div>
+
+<!-- ARCHIVE -->
+<div class="page" id="page-archive">
+  <div class="archive-header">
+    <div class="archive-eyebrow">Archive</div>
+    <h1 class="archive-title">Our Journal</h1>
+    <p class="archive-desc">길 위에서 마주한 찰나의 순간들, 마음 깊이 남겨진 풍경과 이야기들을 이곳에 기록합니다.</p>
+  </div>
+  <div class="filter-bar">
+    <div class="filter-tabs" id="filter-tabs">
+      <button class="filter-tab active" onclick="setFilter('전체보기')">전체보기</button>
+      <button class="filter-tab" onclick="setFilter('자연')">자연</button>
+      <button class="filter-tab" onclick="setFilter('도시')">도시</button>
+      <button class="filter-tab" onclick="setFilter('음식')">음식</button>
+      <button class="filter-tab" onclick="setFilter('카페·숙소')">카페·숙소</button>
+    </div>
+    <div class="search-box">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="arch-search" type="text" placeholder="이야기 검색..." oninput="onSearch(this.value)">
+    </div>
+  </div>
+  <div class="results-info"><span id="results-count">0 Results Found</span></div>
+  <div class="archive-grid-wrap">
+    <div class="archive-grid" id="archive-grid"><div class="loading-state" style="grid-column:1/-1"><div class="loading-spinner"></div>불러오는 중...</div></div>
+    <div class="no-results" id="no-results" style="display:none;">검색 결과가 없어요.</div>
+  </div>
+  <footer>
+    <div class="footer-inner">
+      <div><span class="footer-logo">ming9reum</span><p class="footer-tagline">영원히 기억될 찰나의 순간들, 감성 여행 매거진</p></div>
+      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a onclick="goArchive()">Journal</a></li><li><a href="#">About</a></li></ul></div>
+      <div><div class="footer-col-title">Connect</div><ul class="footer-links"><li><a href="#">Instagram</a></li><li><a href="#">Pinterest</a></li></ul></div>
+      <div><div class="footer-col-title">Newsletter</div><div class="newsletter-input-row"><input class="newsletter-input" type="email" placeholder="Your email"><button class="newsletter-join">Join</button></div><p class="newsletter-note">감성 여행 이야기를 매주 받아보세요.</p></div>
+    </div>
+    <div class="footer-bottom"><span class="footer-copy">© 2026 ming9reum. All rights reserved.</span><ul class="footer-legal"><li><a href="#">Privacy</a></li><li><a href="ming9reum-admin.html">Admin</a></li></ul></div>
+  </footer>
+</div>
+
+<!-- POST -->
+<div class="page" id="page-post">
+  <div class="post-hero" id="post-hero">
+    <div class="post-hero-img" id="post-hero-img"></div>
+    <div class="post-hero-fog"></div>
+    <div class="post-hero-content">
+      <div class="post-breadcrumb">
+        <a onclick="goArchive()">Journal</a>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        <span id="post-bc-cat"></span>
+      </div>
+      <div class="post-hero-cat" id="post-hero-cat"></div>
+      <h1 class="post-hero-title" id="post-hero-title"></h1>
+      <p class="post-hero-subtitle" id="post-hero-sub"></p>
+    </div>
+  </div>
+  <div class="post-body-wrap">
+    <aside>
+      <div class="post-author-label">Written by</div>
+      <div class="post-author-name"><div class="author-avatar">M</div><span>ming9reum</span></div>
+      <div class="post-date-block"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span id="post-date"></span></div>
+      <div class="post-read-block"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span id="post-read"></span></div>
+      <div class="post-sidebar-divider"></div>
+      <div class="post-quote-aside" id="post-aside-quote"></div>
+    </aside>
+    <div class="post-content" id="post-content-body"></div>
+  </div>
+  <div class="post-nav-bar">
+    <button class="post-nav-back" onclick="goArchive()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      전체 게시글 목록
+    </button>
+    <div class="post-nav-right">
+      <div class="post-nav-label">Traveler's Log</div>
+      <div class="post-nav-edition">ming9reum @ 2026</div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-inner">
+      <div><span class="footer-logo">ming9reum</span><p class="footer-tagline">영원히 기억될 찰나의 순간들, 감성 여행 매거진</p></div>
+      <div><div class="footer-col-title">Explore</div><ul class="footer-links"><li><a onclick="goArchive()">Journal</a></li><li><a href="#">About</a></li></ul></div>
+      <div><div class="footer-col-title">Connect</div><ul class="footer-links"><li><a href="#">Instagram</a></li><li><a href="#">Pinterest</a></li></ul></div>
+      <div><div class="footer-col-title">Newsletter</div><div class="newsletter-input-row"><input class="newsletter-input" type="email" placeholder="Your email"><button class="newsletter-join">Join</button></div><p class="newsletter-note">감성 여행 이야기를 매주 받아보세요.</p></div>
+    </div>
+    <div class="footer-bottom"><span class="footer-copy">© 2026 ming9reum. All rights reserved.</span><ul class="footer-legal"><li><a href="#">Privacy</a></li><li><a href="ming9reum-admin.html">Admin</a></li></ul></div>
+  </footer>
+</div>
+
+<script>
+// ── SUPABASE CONFIG ──
+const SUPABASE_URL = 'https://wtzjgbooorwkcqaqucoo.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0empnYm9vb3J3a2NxYXF1Y29vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NzA1NDcsImV4cCI6MjA5NDE0NjU0N30.nl087a17d_ppCRahLw8s_iVzbm8NA49mlMwvYL3v50k';
+
+async function sbFetch(path, opts = {}) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      ...opts.headers
+    },
+    ...opts
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+async function fetchPosts() {
+  return sbFetch('posts?select=*&order=created_at.desc');
+}
+
+// ── STATE ──
+let allPosts = [];
+let currentFilter = '전체보기';
+let currentSearch = '';
+
+// ── HELPERS ──
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`;
+}
+function readMin(c) { return Math.max(1, Math.ceil((c||'').length / 500)) + '분 소요'; }
+function mdot() { return '<span class="mdot"></span>'; }
+
+// ── NAVIGATION ──
+function showPage(id, push = true) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+  document.getElementById('main-nav').classList.toggle('on-hero', id === 'page-home');
+}
+function goHome(push = true) {
+  showPage('page-home');
+  renderHome();
+  if (push) history.pushState({ page: 'home' }, '', '#');
+}
+function goArchive(push = true) {
+  showPage('page-archive');
+  currentFilter = '전체보기';
+  currentSearch = '';
+  document.getElementById('arch-search').value = '';
+  setFilterUI('전체보기');
+  renderArchive();
+  if (push) history.pushState({ page: 'archive' }, '', '#journal');
+}
+function goArchiveFilter(cat, push = true) {
+  showPage('page-archive');
+  currentFilter = cat;
+  currentSearch = '';
+  document.getElementById('arch-search').value = '';
+  setFilterUI(cat);
+  renderArchive();
+  if (push) history.pushState({ page: 'archive', filter: cat }, '', '#journal');
+}
+function goPost(id, push = true) {
+  const p = allPosts.find(x => x.id === id);
+  if (!p) return;
+  showPage('page-post');
+  renderPost(p);
+  if (push) history.pushState({ page: 'post', id }, '', `#post-${id}`);
+}
+
+window.addEventListener('popstate', (e) => {
+  const s = e.state;
+  if (!s || s.page === 'home') goHome(false);
+  else if (s.page === 'archive') { if (s.filter) goArchiveFilter(s.filter, false); else goArchive(false); }
+  else if (s.page === 'post') goPost(s.id, false);
+});
+
+// ── FILTER ──
+function setFilter(cat) { currentFilter = cat; setFilterUI(cat); renderArchive(); }
+function setFilterUI(cat) {
+  document.querySelectorAll('.filter-tab').forEach(btn => btn.classList.toggle('active', btn.textContent.trim() === cat));
+}
+function onSearch(val) { currentSearch = val.trim().toLowerCase(); renderArchive(); }
+function filteredPosts() {
+  return allPosts.filter(p => {
+    const catOk = currentFilter === '전체보기' || p.category === currentFilter;
+    const q = currentSearch;
+    const searchOk = !q || (p.title||'').toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q) || (p.location||'').toLowerCase().includes(q) || (p.excerpt||'').toLowerCase().includes(q);
+    return catOk && searchOk;
+  });
+}
+
+// ── CARD HTML ──
+function portraitCardHTML(p) {
+  return `<a class="portrait-card" href="#" onclick="goPost('${esc(p.id)}'); return false;">
+    ${p.image_url ? `<img class="portrait-card-img" src="${esc(p.image_url)}" alt="${esc(p.title)}">` : `<div class="portrait-card-img" style="background:var(--cream2);aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:2.5rem;">☁</div>`}
+    <div class="portrait-card-overlay"></div>
+    <div class="portrait-badge">Featured Story</div>
+    <div class="portrait-content">
+      <div class="portrait-cat">${esc(p.category||'')}</div>
+      <div class="portrait-title">${esc(p.title)}</div>
+      <div class="portrait-meta"><span>${esc(p.location||'')}</span>${mdot()}<span>${fmtDate(p.created_at)}</span></div>
+    </div>
+  </a>`;
+}
+
+function lcardHTML(p) {
+  return `<a class="lcard" href="#" onclick="goPost('${esc(p.id)}'); return false;">
+    <div class="lcard-img-wrap">${p.image_url ? `<img class="lcard-img" src="${esc(p.image_url)}" alt="${esc(p.title)}">` : '<div class="lcard-no-img">☁</div>'}</div>
+    <div class="lcard-body">
+      <div class="lcard-badge">${esc(p.category||'')}</div>
+      <div class="lcard-meta"><span>${fmtDate(p.created_at)}</span>${mdot()}${p.location?`<span>${esc(p.location)}</span>${mdot()}`:''}${readMin(p.content)}</div>
+      <h3 class="lcard-title">${esc(p.title)}</h3>
+      <p class="lcard-excerpt">${esc(p.excerpt||p.content||'')}</p>
+      <div class="lcard-footer"><div class="lcard-author"><div class="author-avatar">M</div><span>BY ming9reum</span></div><span class="lcard-read">Read More →</span></div>
+    </div>
+  </a>`;
+}
+
+function acardHTML(p) {
+  return `<a class="acard" href="#" onclick="goPost('${esc(p.id)}'); return false;">
+    <div class="acard-img-wrap">${p.image_url ? `<img class="acard-img" src="${esc(p.image_url)}" alt="${esc(p.title)}">` : '<div class="acard-no-img">☁</div>'}</div>
+    <div class="acard-body">
+      <div class="acard-badge">${esc(p.category||'')}</div>
+      <div class="acard-meta"><span>${fmtDate(p.created_at)}</span>${mdot()}${p.location?`<span>${esc(p.location)}</span>${mdot()}`:''}${readMin(p.content)}</div>
+      <h3 class="acard-title">${esc(p.title)}</h3>
+      <p class="acard-excerpt">${esc(p.excerpt||p.content||'')}</p>
+      <div class="acard-footer"><div class="acard-author"><div class="author-avatar">M</div><span>BY ming9reum</span></div><span class="acard-read">Read More →</span></div>
+    </div>
+  </a>`;
+}
+
+// ── RENDER ──
+function renderHome() {
+  const curated = allPosts.slice(0, 2);
+  const latest = allPosts.slice(2, 5);
+  const cEl = document.getElementById('home-curated');
+  const lEl = document.getElementById('home-latest');
+  cEl.innerHTML = curated.length ? curated.map(portraitCardHTML).join('') : '<div style="padding:3rem;text-align:center;color:var(--muted);font-style:italic;font-size:0.85rem;">아직 작성된 이야기가 없어요.</div>';
+  lEl.innerHTML = latest.length ? latest.map(lcardHTML).join('') : '<div style="grid-column:1/-1;padding:3rem;text-align:center;color:var(--muted);font-style:italic;font-size:0.85rem;">최근 게시물이 없어요.</div>';
+}
+
+function renderArchive() {
+  const list = filteredPosts();
+  const grid = document.getElementById('archive-grid');
+  const noRes = document.getElementById('no-results');
+  document.getElementById('results-count').textContent = `${list.length} Results Found`;
+  if (!list.length) { grid.innerHTML = ''; noRes.style.display = 'block'; return; }
+  noRes.style.display = 'none';
+  grid.innerHTML = list.map(acardHTML).join('');
+}
+
+function renderPost(p) {
+  document.getElementById('post-hero-img').style.backgroundImage = p.image_url ? `url('${esc(p.image_url)}')` : 'none';
+  document.getElementById('post-bc-cat').textContent = p.category || '';
+  document.getElementById('post-hero-cat').textContent = p.category || '';
+  document.getElementById('post-hero-title').textContent = p.title || '';
+  document.getElementById('post-hero-sub').textContent = p.excerpt || p.location || '';
+  document.getElementById('post-date').textContent = fmtDate(p.created_at);
+
+  // 블록 기반 본문 렌더링
+  const blocks = p.blocks || [];
+
+  // 사이드바 인용구: 첫 번째 quote 블록
+  const firstQuote = blocks.find(b => b.type === 'quote');
+  document.getElementById('post-aside-quote').textContent = firstQuote ? `"${firstQuote.content.slice(0,80)}…"` : '';
+
+  // 읽기 시간 계산 (텍스트 블록 합산)
+  const totalText = blocks.filter(b => b.type === 'text').map(b => b.content).join(' ');
+  document.getElementById('post-read').textContent = readMin(totalText);
+
+  // 블록 → HTML
+  let html = '';
+  blocks.forEach(b => {
+    if (b.type === 'text') {
+      (b.content || '').split('\n\n').filter(Boolean).forEach(para => {
+        html += `<p>${esc(para)}</p>`;
+      });
+    }
+    if (b.type === 'quote') {
+      html += `<div class="post-pullquote">"${esc(b.content)}"</div>`;
+    }
+    if (b.type === 'image' && b.url) {
+      const sizeMap = { full: '100%', wide: '90%', medium: '70%' };
+      const w = sizeMap[b.size] || '100%';
+      html += `<div class="post-img-single" style="width:${w};margin-left:auto;margin-right:auto;">
+        <img src="${esc(b.url)}" alt="${esc(b.caption||'')}">
+        ${b.caption ? `<div style="text-align:center;font-size:.72rem;color:var(--muted);margin-top:.6rem;font-style:italic;">${esc(b.caption)}</div>` : ''}
+      </div>`;
+    }
+  });
+
+  if (!html) html = '<p style="color:var(--muted);font-style:italic;">아직 내용이 없어요.</p>';
+  document.getElementById('post-content-body').innerHTML = html;
+}
+
+// ── SCROLL ──
+window.addEventListener('scroll', () => {
+  if (document.getElementById('page-home').classList.contains('active')) {
+    document.getElementById('main-nav').classList.toggle('on-hero', window.scrollY < window.innerHeight * 0.8);
+  }
+}, { passive: true });
+
+// ── INIT ──
+async function init() {
+  try {
+    allPosts = await fetchPosts();
+  } catch (e) {
+    console.error('Supabase 연결 오류:', e);
+    allPosts = [];
+  }
+  renderHome();
+  history.replaceState({ page: 'home' }, '', '#');
+}
+
+init();
+</script>
+</body>
+</html>
